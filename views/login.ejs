@@ -20,7 +20,7 @@
               <div class="log-reg-area sign">
                 <h2 class="log-title">Login</h2>
 
-                <form onsubmit="return doLogin(this);">
+                <form onsubmit="return doLogin(this);" method="POST">
                   <div class="form-group">
                     <input type="email" required name="email" />
                     <label class="control-label">Email</label
@@ -58,9 +58,25 @@
           if (this.readyState == 4 && this.status == 200) {
             form.submit.removeAttribute("disabled");
             form.submit.innerHTML = `<span> Login </span>`;
+
+            var response = JSON.parse(this.responseText);
+            if (response.status == "success") {
+              var accessToken = response.accessToken;
+              localStorage.setItem("accessToken", accessToken);
+
+              if (response.profileImage == "") {
+                window.location.href("/updateProfile");
+              } else {
+                window.location.href("/");
+              }
+            }
           } else {
+            alert(response.message);
           }
         };
+
+        ajax.send(new FormData(form));
+        return false;
       }
     </script>
   </body>

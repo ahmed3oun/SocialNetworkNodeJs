@@ -42,6 +42,10 @@ http.listen(3000 , () => {
 
         })
 
+        app.get('/login', (req, res) => {
+             res.render('login');
+        });
+
         app.post('/signup', (req, res) => {
             var name = req.fields.name ;
             var username = req.fields.username;
@@ -97,13 +101,49 @@ http.listen(3000 , () => {
                 }
             )
 
-            app.get('/login', (request, response) => {
-                response.render("login")
-            });
+        /* app.get('/login', (request, response) => {
+            return response.render("login")
+        }); */
 
-            app.post('/login', (request,response) => {
-                var email = req.fields.email;
-                var password = req.fields.password;
+        app.post('/login', (request,response) => {
+            var email = req.fields.email;
+            var password = req.fields.password;
+
+            database.collection("users").findOne({
+                "email" : email     
+                },function (error,user) {
+                    if (user==null) {
+                        response.json({
+                            "status" : "error" ,
+                            "message" : "Email does not exist "
+                        })
+                    }else{
+                        bcrypt.compare(password,user.password,function (error,isVerify) {
+                            if (isVerify) {
+                                var accessToken = jwt.sign({"email" : email} , accessTokenSecret)
+                                database.collection('users').findOneAndUpdate({
+                                    "email" : email
+                                },{
+                                    $set:{
+                                        "accessToken" : accessToken
+                                    }
+                                },function (error , data) {
+                                    response.json({
+                                        "status" : "success" ,
+                                        "message" : "Login successfully " ,
+                                        "accessToken" : accessToken ,
+                                        "profileImage" : user.profileImage
+                                    })
+                                })
+                            }else{
+                                response.json({
+                                    "status" : "error" ,
+                                    "message" : "Password is not correct ! "
+                                })
+                            }
+                        })
+                    }
+                })
                 
             });
         });
