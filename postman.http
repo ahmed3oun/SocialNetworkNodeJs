@@ -1,0 +1,21 @@
+POST https://localhost:3000/signup HTTP/1.1
+Content-Type: application/json
+
+{
+    "name" : "ahmed",
+    "username" : "ahmed3oun" ,
+    "email" : "ahmedoun199@gmail.com",
+    "password" : "password",
+    "gender" : "M" ,
+    "profileImage" : "" ,
+    "coverPhoto" : "" ,
+    "dob" : "" ,
+    "city" : "" ,
+    "country" : "" ,
+    "aboutMe" : "" ,
+    "friends" : [] ,
+    "pages" : [] ,
+    "notifications" : [] ,
+    "groups" : [] ,
+    "posts" : []
+}
